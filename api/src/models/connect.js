@@ -18,6 +18,6 @@ const connect = async () => {
     // set it to a global variable
     global.connection = connection;
     return connection;
-}
+};
 
 module.exports = connect;

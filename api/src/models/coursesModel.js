@@ -7,7 +7,7 @@ completed_lessons`;
 
 const getAll = async (userId) => {
     try {
-        // connecting
+        // connect to db
         const conn = await connect();
         // preparing query
         const query = `SELECT ${courseFields} FROM courses WHERE user_id = ?`;
@@ -17,16 +17,19 @@ const getAll = async (userId) => {
     
     } catch (error) {
         console.log(error);
-        throw "Error on getting courses";
+        throw 'Error on getting courses';
     }
-}
+};
 
 const getById = async (id, userId) => {
     try {
+        // connect to db
         const conn = await connect();
 
+        //preparing query
         const query = `SELECT ${courseFields} FROM courses WHERE id = ? AND user_id = ?`;
 
+        // executing and returning the result
         const [result] = await conn.query(query, [
             id,
             userId
@@ -36,14 +39,16 @@ const getById = async (id, userId) => {
     
     }   catch (error) {
         console.log(error);
-        throw "Error on getting course";
+        throw 'Error on getting course';
     }
-}
+};
 
 const save = async (course) => {
     try {
+        // connect to db
         const conn = await connect();
         
+        // query fields
         const insertCourseFields = `user_id, name, link, category_id, notes, 
             completed, certificate_link, total_lessons,
             completed_lessons`;
@@ -61,18 +66,19 @@ const save = async (course) => {
             course.certificateLink || null,
             course.totalLessons || null,
             course.completedLessons || null
-        ]
+        ];
 
         return await conn.query(query, values);
     
     } catch (error) {
         console.log(error);
-        throw "Error on saving course";
+        throw 'Error on saving course';
     }
-}
+};
 
 const update = async (course) => {
     try {
+        // connect to db
         const conn = await connect();
         
         const updateCourseFields = `name = ?, link = ?, category_id = ?, notes = ?, 
@@ -91,22 +97,23 @@ const update = async (course) => {
             course.completedLessons || null,
             course.id,
             course.userId,
-        ]
+        ];
         // execute query
         return await conn.query(query, values);
     
     } catch (error) {
         console.log(error);
-        throw "Error on saving course";
+        throw 'Error on saving course';
     }
-}
+};
 
 const remove = async (id, user_id) => {
     try {
+        // connect to db
         const conn = await connect();
-    
+        
+        // preparing query
         const query = 'DELETE FROM courses WHERE id = ? AND user_id = ?';
-    
         const [ result ] = await conn.query(query, [
             id,
             user_id
@@ -115,9 +122,9 @@ const remove = async (id, user_id) => {
 
     }  catch (error) {
         console.log(error);
-        throw "Error on deleting course";
+        throw 'Error on deleting course';
     }
-}
+};
 
 
 module.exports = {
@@ -126,4 +133,4 @@ module.exports = {
     update,
     save,
     remove,
-}
+};

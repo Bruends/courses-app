@@ -15,7 +15,7 @@ coursesRouter.post('/', (request, response) => {
 
 coursesRouter.put('/', (request, response) => {
     coursesController.update(request, response);
-})
+});
 
 coursesRouter.delete('/:id', (request, response) => {
     coursesController.remove(request, response);

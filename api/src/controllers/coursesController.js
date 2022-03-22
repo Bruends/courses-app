@@ -1,79 +1,82 @@
 const coursesModel = require('../models/coursesModel');
 
 const getAll = async (request, response) => {
-    const { userId } = request;
-
     try {
+        // getting user id
+        const { userId } = request;
+        //getting courses
         const courses = await coursesModel.getAll(userId);
         return response.status(200).json( courses );
     } catch (error) {
         console.log(error);
-        return response.status(500);
+        return response.sendStatus(500);
     }
-} 
+}; 
 
 const getById = async (request, response) =>  {
     try {
-        const {userId} = request;
+        // getting user and course id
+        const { userId } = request;
         const { id } = request.params;
+        
+        // consulting db
         const course = await coursesModel.getById(id, userId);
+        
         return response.status(200).json(course[0]);
     } catch (error) {
         console.log(error);
-        return response.status(500);
+        return response.sendStatus(500);
     }
-}
+};
 
 const save = (request, response) => {
+    
+    // getting request data
     const { userId } = request;
-
-    // getting the request values
     const course = request.body;
-
     course.userId = userId;
     
+    // saving new user
     coursesModel.save(course);
 
-    console.log("save request: ", course);
+    console.log('save request: ', course);
 
-    return response.status(201).json({});
-}
+    return response.sendStatus(201);
+};
 
 const update = async (request, response) => {
     try {
-        // getting request values
+        // getting request data
         const { userId } = request;
         const course = request.body;      
-        
         course.userId = userId;
 
-        coursesModel.update(course);
+        // updating course in DB
+        coursesModel.update(course);        
 
-        console.log("update request: ", course);
-
-        return response.status(200).json({});
+        return response.sendStatus(200);
     } catch(error) {
         console.log(error);
-        return response.status(500);
+        return response.sendStatus(500);
     }
 
-}
+};
 
 const remove = async (request, response) => {
+    // getting request data
     const { userId } = request;
     const { id } = request.params;    
 
     try {
         // deleting course 
-        coursesModel.remove(id, userId);
-        
-        response.status(200).json({});
+        coursesModel.remove(id, userId);        
+        response.sendStatus(200);
 
     } catch(error) {
         console.log(error);
-        return response.status(500);
+        return response.sendStatus(500);
     }
-}
+};
 
 module.exports = {
     getAll,

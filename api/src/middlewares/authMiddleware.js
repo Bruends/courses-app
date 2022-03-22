@@ -1,14 +1,14 @@
 const jwt = require('jsonwebtoken');
 
 const authMiddleware = (request, response, next) => {
-    const bearerToken = request.headers["authorization"];
+    const bearerToken = request.headers['authorization'];
 
     // no token
     if(!bearerToken)
         return response.status(401).json({message: 'no token'});
 
     // remove the 'bearer'
-    const token = bearerToken.split(" ")[1];
+    const token = bearerToken.split(' ')[1];
 
     // invalid token format
     if(!token)
@@ -23,6 +23,6 @@ const authMiddleware = (request, response, next) => {
         request.userId = decoded.id;
         next();
     });
-} 
+}; 
 
 module.exports = authMiddleware;
