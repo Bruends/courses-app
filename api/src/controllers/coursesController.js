@@ -14,8 +14,9 @@ const getAll = async (request, response) => {
 
 const getById = async (request, response) =>  {
     try {
+        const {userId} = request;
         const { id } = request.params;
-        const course = await coursesModel.getById(id);
+        const course = await coursesModel.getById(id, userId);
         return response.status(200).json(course[0]);
     } catch (error) {
         console.log(error);
@@ -40,8 +41,11 @@ const save = (request, response) => {
 
 const update = async (request, response) => {
     try {
-        // getting the request values
-        const course = request.body;       
+        // getting request values
+        const { userId } = request;
+        const course = request.body;      
+        
+        course.userId = userId;
 
         coursesModel.update(course);
 
@@ -56,12 +60,12 @@ const update = async (request, response) => {
 }
 
 const remove = async (request, response) => {
-    const { id } = request.params;
-    console.log(id);
+    const { userId } = request;
+    const { id } = request.params;    
 
     try {
         // deleting course 
-        coursesModel.remove(id);
+        coursesModel.remove(id, userId);
         
         response.status(200).json({});
 

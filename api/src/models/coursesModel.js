@@ -1,15 +1,17 @@
 const connect = require('./connect');
 
+// field string for selects
 const courseFields = `id, user_id, name, link, category_id, notes, 
 completed, last_updated, certificate_link, total_lessons,
 completed_lessons`;
 
 const getAll = async (userId) => {
     try {
+        // connecting
         const conn = await connect();
-
+        // preparing query
         const query = `SELECT ${courseFields} FROM courses WHERE user_id = ?`;
-
+        // exetute query and return courses
         const [result] = await conn.query(query, [userId]);
         return result;
     
@@ -19,13 +21,17 @@ const getAll = async (userId) => {
     }
 }
 
-const getById = async (id) => {
+const getById = async (id, userId) => {
     try {
         const conn = await connect();
 
-        const query = `SELECT ${courseFields} FROM courses WHERE id = ?`;
+        const query = `SELECT ${courseFields} FROM courses WHERE id = ? AND user_id = ?`;
 
-        const [result] = await conn.query(query, id);
+        const [result] = await conn.query(query, [
+            id,
+            userId
+        ]);
+
         return result;
     
     }   catch (error) {
@@ -37,13 +43,24 @@ const getById = async (id) => {
 const save = async (course) => {
     try {
         const conn = await connect();
-    
+        
+        const insertCourseFields = `user_id, name, link, category_id, notes, 
+            completed, certificate_link, total_lessons,
+            completed_lessons`;
+
         // preparing query
-        const query  = 'INSERT INTO courses(user_id, name, link, category_id) VALUES (?,?,?, 1);';
+        const query  = `INSERT INTO courses(${insertCourseFields}) 
+                        VALUES (?,?,?,?,?,?,?,?,?)`;
         const values = [
             course.userId,
             course.name,
-            course.link
+            course.link,
+            course.categoryId || 1,
+            course.notes || null,
+            course.completed || false,
+            course.certificateLink || null,
+            course.totalLessons || null,
+            course.completedLessons || null
         ]
 
         return await conn.query(query, values);
@@ -57,15 +74,25 @@ const save = async (course) => {
 const update = async (course) => {
     try {
         const conn = await connect();
-    
+        
+        const updateCourseFields = `name = ?, link = ?, category_id = ?, notes = ?, 
+            completed = ?, certificate_link = ?, total_lessons = ?, completed_lessons = ?`;
+
         // preparing query
-        const query  = 'UPDATE courses set name = ?, link = ?  WHERE id = ?';
+        const query  = `UPDATE courses SET ${updateCourseFields}  WHERE id = ? AND user_id = ?`;
         const values = [
             course.name,
             course.link,
-            course.id
+            course.categoryId || 1,
+            course.notes || null,
+            course.completed || false,
+            course.certificateLink || null,
+            course.totalLessons || null,
+            course.completedLessons || null,
+            course.id,
+            course.userId,
         ]
-
+        // execute query
         return await conn.query(query, values);
     
     } catch (error) {
@@ -74,13 +101,16 @@ const update = async (course) => {
     }
 }
 
-const remove = async (id) => {
+const remove = async (id, user_id) => {
     try {
         const conn = await connect();
     
-        const query = 'DELETE FROM courses WHERE id = ?';
+        const query = 'DELETE FROM courses WHERE id = ? AND user_id = ?';
     
-        const [ result ] = await conn.query(query, id);
+        const [ result ] = await conn.query(query, [
+            id,
+            user_id
+        ]);
         return result;
 
     }  catch (error) {
