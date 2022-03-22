@@ -1,12 +1,16 @@
 const connect = require('./connect');
 
-const getAll = async () => {
+const courseFields = `id, user_id, name, link, category_id, notes, 
+completed, last_updated, certificate_link, total_lessons,
+completed_lessons`;
+
+const getAll = async (userId) => {
     try {
         const conn = await connect();
 
-        const query = 'SELECT id, name, link FROM courses';
+        const query = `SELECT ${courseFields} FROM courses WHERE user_id = ?`;
 
-        const [result] = await conn.query(query);
+        const [result] = await conn.query(query, [userId]);
         return result;
     
     } catch (error) {
@@ -19,7 +23,7 @@ const getById = async (id) => {
     try {
         const conn = await connect();
 
-        const query = 'SELECT id, name, link FROM courses WHERE id = ?';
+        const query = `SELECT ${courseFields} FROM courses WHERE id = ?`;
 
         const [result] = await conn.query(query, id);
         return result;
@@ -35,9 +39,9 @@ const save = async (course) => {
         const conn = await connect();
     
         // preparing query
-        const query  = 'INSERT INTO courses(user_id, name, link) VALUES (?,?,?);';
+        const query  = 'INSERT INTO courses(user_id, name, link, category_id) VALUES (?,?,?, 1);';
         const values = [
-            course.user_id,
+            course.userId,
             course.name,
             course.link
         ]

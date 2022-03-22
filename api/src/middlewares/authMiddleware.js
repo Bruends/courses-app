@@ -5,22 +5,22 @@ const authMiddleware = (request, response, next) => {
 
     // no token
     if(!bearerToken)
-        return response.status(401).json({message: 'no token'})
+        return response.status(401).json({message: 'no token'});
 
     // remove the 'bearer'
     const token = bearerToken.split(" ")[1];
 
     // invalid token format
     if(!token)
-        return response.status(401).json({message: 'invalid token'})
+        return response.status(401).json({message: 'invalid token'});
 
     jwt.verify(token, process.env.SECRET, (err, decoded) => {
         // invalid token
         if(err)
-            return response.status(401).json({message: 'error validating token'})
+            return response.status(401).json({message: 'error validating token'});
         
+        // save userId on request
         request.userId = decoded.id;
-        console.log(decoded)
         next();
     });
 } 

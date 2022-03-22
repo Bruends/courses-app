@@ -1,8 +1,10 @@
 const coursesModel = require('../models/coursesModel');
 
 const getAll = async (request, response) => {
+    const { userId } = request;
+
     try {
-        const courses = await coursesModel.getAll();
+        const courses = await coursesModel.getAll(userId);
         return response.status(200).json( courses );
     } catch (error) {
         console.log(error);
@@ -22,8 +24,12 @@ const getById = async (request, response) =>  {
 }
 
 const save = (request, response) => {
+    const { userId } = request;
+
     // getting the request values
     const course = request.body;
+
+    course.userId = userId;
     
     coursesModel.save(course);
 
