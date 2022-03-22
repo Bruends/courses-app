@@ -2,6 +2,7 @@ const express = require('express');
 const cors = require('cors');
 const coursesRouter = require('./src/routes/courseRoutes');
 const authRouter = require('./src/routes/authRoutes');
+const authMiddleware = require("./src/middlewares/authMiddleware");
 
 require('dotenv').config();
 
@@ -12,6 +13,7 @@ app.use(express.json());
 
 // routers
 app.use('/auth', authRouter);
+app.use('/courses', authMiddleware);
 app.use('/courses', coursesRouter);
 
 app.listen(3000, () => {
