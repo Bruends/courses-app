@@ -1,4 +1,5 @@
 const coursesModel = require('../models/coursesModel');
+const categoriesModel = require('../models/categoriesModel');
 
 const getAll = async (request, response) => {
     try {
@@ -29,17 +30,20 @@ const getById = async (request, response) =>  {
     }
 };
 
-const save = (request, response) => {
-    
+const save = async (request, response) => {    
     // getting request data
     const { userId } = request;
     const course = request.body;
     course.userId = userId;
-    
-    // saving new user
-    coursesModel.save(course);
 
-    console.log('save request: ', course);
+    // if the category is new
+    if(!course.categoryId && course.category) {
+       const newCategoryId = await addCategoryAndReturnId(course.category, userId);
+       course.categoryId = newCategoryId;
+    }
+    
+    // saving new course
+    coursesModel.save(course);    
 
     return response.sendStatus(201);
 };
@@ -48,11 +52,11 @@ const update = async (request, response) => {
     try {
         // getting request data
         const { userId } = request;
-        const course = request.body;      
+        const course = request.body;
         course.userId = userId;
 
         // updating course in DB
-        coursesModel.update(course);        
+        coursesModel.update(course);
 
         return response.sendStatus(200);
     } catch(error) {
@@ -76,6 +80,21 @@ const remove = async (request, response) => {
         console.log(error);
         return response.sendStatus(500);
     }
+};
+
+const addCategoryAndReturnId = async (name, userId) => {
+    // force lowercase for category name
+    const lowerName = name.toLowerCase();
+
+    // check if category already exist
+    const category = await categoriesModel.getCategoryId(lowerName, userId);
+    if(category.length > 1){
+        return category[0].id;
+    }
+
+    // save new category otherwise
+    const saveResponse = await categoriesModel.save(lowerName, userId);
+    return saveResponse.insertId;
 };
 
 module.exports = {
