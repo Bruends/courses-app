@@ -1,4 +1,5 @@
 const connect = require('./connect');
+const logger = require('../utils/logger');
 
 const save = async (user) => {
     try {
@@ -18,7 +19,7 @@ const save = async (user) => {
         return await conn.query(query, values);
     
     } catch (error) {
-        console.log(error);
+        logger.error(error);
         throw 'Error on saving the new user';
     }
 };
@@ -39,7 +40,7 @@ const findByUsername = async (username) => {
         return result;
 
     } catch (error) {
-        console.log(error);
+        logger.error(error);
         throw 'Error on saving the new user';
     }
 };

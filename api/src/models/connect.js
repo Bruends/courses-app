@@ -13,8 +13,7 @@ const connect = async () => {
         database: DB_NAME,
         password: DB_PASSWORD
     });
-
-    console.log('connection open');
+    
     // set it to a global variable
     global.connection = connection;
     return connection;

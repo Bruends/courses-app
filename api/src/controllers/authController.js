@@ -1,13 +1,17 @@
 const authModel = require('../models/authModel');
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
+const logger = require('../utils/logger');
 const { validateUser } = require('../utils/validate');
 
-const save = async (request, response) => {
-    
+
+const save = async (request, response) => {    
     try {
         // get and validate user
         const user = request.body;
+
+        logger.info(user);
+
         if(!validateUser(user))
             return response.sendStatus(400);
 
@@ -15,13 +19,11 @@ const save = async (request, response) => {
         user.password = await bcrypt.hash(user.password, 8);       
 
         // saving user on DB
-        authModel.save(user);
-        console.log('save request: ', user);
+        authModel.save(user);        
 
-        user.password = null;
-        return response.status(201).json({ user });
+        return response.sendStatus(201);        
     } catch (error) {
-        console.log(error);
+        logger.error(error);
     }
 };
 
@@ -48,7 +50,7 @@ const getToken = async (request, response) => {
         const token  = jwt.sign({ id: user.id }, process.env.SECRET);
         return response.status(200).json({ token });
     } catch (error) {
-        console.log(error);
+        logger.error(error);
         return response.sendStatus(500);
     }
 };

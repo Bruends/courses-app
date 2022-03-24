@@ -1,4 +1,5 @@
 const connect = require('./connect');
+const logger = require('../utils/logger');
 
 // field string for selects
 const courseFields = `id, user_id, name, link, category_id, notes, 
@@ -16,7 +17,7 @@ const getAll = async (userId) => {
         return result;
     
     } catch (error) {
-        console.log(error);
+        logger.error(error);
         throw 'Error on getting courses';
     }
 };
@@ -38,7 +39,7 @@ const getById = async (id, userId) => {
         return result;
     
     }   catch (error) {
-        console.log(error);
+        logger.error(error);
         throw 'Error on getting course';
     }
 };
@@ -71,7 +72,7 @@ const save = async (course) => {
         return await conn.query(query, values);
     
     } catch (error) {
-        console.log(error);
+        logger.error(error);
         throw 'Error on saving course';
     }
 };
@@ -102,7 +103,7 @@ const update = async (course) => {
         return await conn.query(query, values);
     
     } catch (error) {
-        console.log(error);
+        logger.error(error);
         throw 'Error on saving course';
     }
 };
@@ -121,7 +122,7 @@ const remove = async (id, user_id) => {
         return result;
 
     }  catch (error) {
-        console.log(error);
+        logger.error(error);
         throw 'Error on deleting course';
     }
 };

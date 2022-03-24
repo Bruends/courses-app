@@ -1,4 +1,5 @@
 const connect = require('./connect.js');
+const logger = require('../utils/logger');
 
 const save = async (name, userId) => {
     try {
@@ -17,7 +18,7 @@ const save = async (name, userId) => {
         return result;
     
     } catch (error) {
-        console.log(error);
+        logger.error(error);
         throw 'Error on saving the new user';
     }
 };
@@ -38,7 +39,7 @@ const getCategories = async (userId) => {
         return categories;
 
     } catch (error) {
-        console.log(error);
+        logger.error(error);
         throw 'Error on saving the new user';
     }
 };
@@ -60,7 +61,7 @@ const getCategoryId = async (name, userId) => {
         return category;
 
     } catch (error) {
-        console.log(error);
+        logger.error(error);
         throw 'Error on saving the new user';
     }
 };

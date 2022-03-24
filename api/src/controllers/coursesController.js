@@ -1,5 +1,6 @@
 const coursesModel = require('../models/coursesModel');
 const categoriesModel = require('../models/categoriesModel');
+const logger = require('../utils/logger');
 
 const getAll = async (request, response) => {
     try {
@@ -9,7 +10,7 @@ const getAll = async (request, response) => {
         const courses = await coursesModel.getAll(userId);
         return response.status(200).json( courses );
     } catch (error) {
-        console.log(error);
+        logger.error(error);
         return response.sendStatus(500);
     }
 }; 
@@ -25,7 +26,7 @@ const getById = async (request, response) =>  {
         
         return response.status(200).json(course[0]);
     } catch (error) {
-        console.log(error);
+        logger.error(error);
         return response.sendStatus(500);
     }
 };
@@ -60,7 +61,7 @@ const update = async (request, response) => {
 
         return response.sendStatus(200);
     } catch(error) {
-        console.log(error);
+        logger.error(error);
         return response.sendStatus(500);
     }
 
@@ -77,7 +78,7 @@ const remove = async (request, response) => {
         response.sendStatus(200);
 
     } catch(error) {
-        console.log(error);
+        logger.error(error);
         return response.sendStatus(500);
     }
 };

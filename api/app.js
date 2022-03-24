@@ -3,6 +3,7 @@ const cors = require('cors');
 const coursesRouter = require('./src/routes/courseRoutes');
 const authRouter = require('./src/routes/authRoutes');
 const authMiddleware = require('./src/middlewares/authMiddleware');
+const logger = require('./src/utils/logger');
 
 require('dotenv').config();
 
@@ -16,6 +17,12 @@ app.use('/auth', authRouter);
 app.use('/courses', authMiddleware);
 app.use('/courses', coursesRouter);
 
+app.use(function(err, req, res, next) {
+    logger.error(err.stack);
+    res.sendStatus(500);
+});
+
+
 app.listen(3000, () => {
-    console.log(`app running on: localhost:${process.env.APP_PORT}/`);
+   logger.info(`app running on: localhost:${process.env.APP_PORT}/`);
 });
