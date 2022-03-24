@@ -2,16 +2,25 @@ const connect = require('./connect');
 const logger = require('../utils/logger');
 
 // field string for selects
-const courseFields = `id, user_id, name, link, category_id, notes, 
-completed, last_updated, certificate_link, total_lessons,
-completed_lessons`;
+const courseFields = `
+    courses.id, courses.user_id, courses.name, courses.link, 
+    categories.name AS category, courses.category_id, courses.notes, 
+    courses.completed, courses.last_updated, courses.certificate_link, 
+    courses.total_lessons, courses.completed_lessons 
+`;
 
 const getAll = async (userId) => {
     try {
         // connect to db
         const conn = await connect();
         // preparing query
-        const query = `SELECT ${courseFields} FROM courses WHERE user_id = ?`;
+        const query =`
+            SELECT ${courseFields}
+            FROM courses
+            JOIN categories
+            ON courses.category_id = categories.id
+            WHERE courses.user_id = ?
+        `;
         // exetute query and return courses
         const [result] = await conn.query(query, [userId]);
         return result;
@@ -28,14 +37,19 @@ const getById = async (id, userId) => {
         const conn = await connect();
 
         //preparing query
-        const query = `SELECT ${courseFields} FROM courses WHERE id = ? AND user_id = ?`;
+        const query = `
+            SELECT ${courseFields}
+            FROM courses
+            JOIN categories
+            ON courses.category_id = categories.id
+            WHERE courses.id = ? AND courses.user_id = ?
+        `;
 
         // executing and returning the result
         const [result] = await conn.query(query, [
             id,
             userId
         ]);
-
         return result;
     
     }   catch (error) {
@@ -86,7 +100,7 @@ const update = async (course) => {
             completed = ?, certificate_link = ?, total_lessons = ?, completed_lessons = ?`;
 
         // preparing query
-        const query  = `UPDATE courses SET ${updateCourseFields}  WHERE id = ? AND user_id = ?`;
+        const query  = `UPDATE courses SET ${updateCourseFields} WHERE id = ? AND user_id = ?`;
         const values = [
             course.name,
             course.link,
@@ -99,6 +113,7 @@ const update = async (course) => {
             course.id,
             course.userId,
         ];
+        
         // execute query
         return await conn.query(query, values);
     

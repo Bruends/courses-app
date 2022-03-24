@@ -39,7 +39,7 @@ const save = async (request, response) => {
 
     // if the category is new
     if(!course.categoryId && course.category) {
-       const newCategoryId = await addCategoryAndReturnId(course.category, userId);
+       const newCategoryId = await addCategoryAndReturnId(course.category);
        course.categoryId = newCategoryId;
     }
     
@@ -56,25 +56,31 @@ const update = async (request, response) => {
         const course = request.body;
         course.userId = userId;
 
+        // if the category is new
+        if(!course.categoryId && course.category) {
+            const newCategoryId = await addCategoryAndReturnId(course.category);
+            course.categoryId = newCategoryId;
+        }
+
         // updating course in DB
-        coursesModel.update(course);
+        const res = await coursesModel.update(course);
+        logger.info(res);
 
         return response.sendStatus(200);
     } catch(error) {
         logger.error(error);
         return response.sendStatus(500);
     }
-
 };
 
 const remove = async (request, response) => {
     // getting request data
     const { userId } = request;
-    const { id } = request.params;    
+    const { id } = request.params;
 
     try {
         // deleting course 
-        coursesModel.remove(id, userId);        
+        coursesModel.remove(id, userId);
         response.sendStatus(200);
 
     } catch(error) {
@@ -83,18 +89,18 @@ const remove = async (request, response) => {
     }
 };
 
-const addCategoryAndReturnId = async (name, userId) => {
+const addCategoryAndReturnId = async (name) => {
     // force lowercase for category name
     const lowerName = name.toLowerCase();
 
     // check if category already exist
-    const category = await categoriesModel.getCategoryId(lowerName, userId);
+    const category = await categoriesModel.getCategoryId(lowerName);
     if(category.length > 1){
         return category[0].id;
     }
 
     // save new category otherwise
-    const saveResponse = await categoriesModel.save(lowerName, userId);
+    const saveResponse = await categoriesModel.save(lowerName);
     return saveResponse.insertId;
 };
 

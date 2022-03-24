@@ -1,16 +1,15 @@
 const connect = require('./connect.js');
 const logger = require('../utils/logger');
 
-const save = async (name, userId) => {
+const save = async (name) => {
     try {
         // connecting to db
         const conn = await connect();
     
         // preparing query
-        const query  = 'INSERT INTO categories(name, user_id) VALUES (?,?)';
+        const query  = 'INSERT INTO categories(name) VALUES (?)';
         const values = [
             name,
-            userId,
         ];
 
         //executing query
@@ -19,7 +18,7 @@ const save = async (name, userId) => {
     
     } catch (error) {
         logger.error(error);
-        throw 'Error on saving the new user';
+        throw 'Error on saving category';
     }
 };
 
@@ -29,7 +28,16 @@ const getCategories = async (userId) => {
         const conn = await connect();
     
         // preparing query
-        const query  = 'SELECT id, name, user_id FROM categories WHERE user_id = ?';
+        // get only the categories that the user 
+        // already used
+        const query  = `
+            SELECT DISTINCT categories.id, categories.name 
+            FROM categories
+            JOIN courses
+            ON courses.category_id = categories.id
+            WHERE courses.user_id = ?;
+        `;
+
         const values = [
             userId,
         ];
@@ -40,20 +48,19 @@ const getCategories = async (userId) => {
 
     } catch (error) {
         logger.error(error);
-        throw 'Error on saving the new user';
+        throw 'Error on getting categories';
     }
 };
 
-const getCategoryId = async (name, userId) => {
+const getCategoryId = async (name) => {
     try {
         // connecting to db
         const conn = await connect();
     
         // preparing query
-        const query  = 'SELECT id FROM categories WHERE name = ? AND user_id = ?';
+        const query  = 'SELECT id FROM categories WHERE name = ?';
         const values = [
-            name,
-            userId,
+            name,            
         ];
 
         //executing query
@@ -66,9 +73,8 @@ const getCategoryId = async (name, userId) => {
     }
 };
 
-
 module.exports = {
     save,
     getCategories,
-    getCategoryId
+    getCategoryId,
 };
