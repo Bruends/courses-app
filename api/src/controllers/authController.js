@@ -1,11 +1,16 @@
 const authModel = require('../models/authModel');
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
+const { validateUser } = require('../utils/validate');
 
 const save = async (request, response) => {
-    const user = request.body;
-
+    
     try {
+        // get and validate user
+        const user = request.body;
+        if(!validateUser(user))
+            return response.sendStatus(400);
+
         //hashing password
         user.password = await bcrypt.hash(user.password, 8);       
 
