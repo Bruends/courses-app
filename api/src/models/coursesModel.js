@@ -74,7 +74,7 @@ const save = async (course) => {
         const values = [
             course.userId,
             course.name,
-            course.link,
+            course.link || null,
             course.categoryId || 1,
             course.notes || null,
             course.completed || false,
@@ -103,7 +103,7 @@ const update = async (course) => {
         const query  = `UPDATE courses SET ${updateCourseFields} WHERE id = ? AND user_id = ?`;
         const values = [
             course.name,
-            course.link,
+            course.link || null,
             course.categoryId || 1,
             course.notes || null,
             course.completed || false,

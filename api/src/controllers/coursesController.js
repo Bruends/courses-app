@@ -1,6 +1,7 @@
 const coursesModel = require('../models/coursesModel');
 const categoriesModel = require('../models/categoriesModel');
 const logger = require('../utils/logger');
+const { validateCourse } = require('../utils/validate');
 
 const getAll = async (request, response) => {
     try {
@@ -31,11 +32,15 @@ const getById = async (request, response) =>  {
     }
 };
 
-const save = async (request, response) => {    
+const save = async (request, response) => {
     // getting request data
     const { userId } = request;
     const course = request.body;
     course.userId = userId;
+
+    // validating course
+    if(!validateCourse(course))
+        return response.sendStatus(400);
 
     // if the category is new
     if(!course.categoryId && course.category) {
@@ -55,6 +60,10 @@ const update = async (request, response) => {
         const { userId } = request;
         const course = request.body;
         course.userId = userId;
+
+        // validating course
+        if(!validateCourse(course))
+            return response.sendStatus(400);
 
         // if the category is new
         if(!course.categoryId && course.category) {
