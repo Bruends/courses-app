@@ -19,11 +19,22 @@ const save = async (request, response) => {
         user.password = await bcrypt.hash(user.password, 8);       
 
         // saving user on DB
-        authModel.save(user);        
+        await authModel.save(user);   
 
         return response.sendStatus(201);        
+    
     } catch (error) {
         logger.error(error);
+        // duplicated email or username 
+        if(error.code === 'ER_DUP_ENTRY'){
+            logger.error(error);
+            if(error.sqlMessage.includes('users.username'))
+                return response.status(400).json({ msg: "usuário já cadastrado!" });
+            
+            return response.status(400).json({ msg: "email já cadastado!" });
+        }
+
+        return response.sendStatus(500);
     }
 };
 

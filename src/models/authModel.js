@@ -2,47 +2,37 @@ const connect = require('./connect');
 const logger = require('../utils/logger');
 
 const save = async (user) => {
-    try {
-        // connecting to db
-        const conn = await connect();
+    // connecting to db
+    const conn = await connect();
     
-        // preparing query
-        const query  = 'INSERT INTO users(name, username, email, password) VALUES (?,?,?,?);';
-        const values = [
-            user.name,
-            user.username,
-            user.email,
-            user.password
-        ];
+    // preparing query
+    const query  = 'INSERT INTO users(name, username, email, password) VALUES (?,?,?,?);';
+    const values = [
+        user.name,
+        user.username,
+        user.email,
+        user.password
+    ];
 
-        //executing query
-        return await conn.query(query, values);
-    
-    } catch (error) {
-        logger.error(error);
-        throw 'Error on saving the new user';
-    }
+    //executing query
+    const res = await conn.query(query, values);
+        
+    return res;
 };
 
 const findByUsername = async (username) => {
-    try {
-        // connecting to db
-        const conn = await connect();
+    // connecting to db
+    const conn = await connect();
     
-        // preparing query
-        const query  = 'SELECT id, username, password FROM users WHERE username = ?;';
-        const values = [
-            username,            
-        ];
+    // preparing query
+    const query  = 'SELECT id, username, password FROM users WHERE username = ?;';
+    const values = [
+        username,            
+    ];
 
         //executing query and retorning user
-        const [result] = await conn.query(query, values);
-        return result;
-
-    } catch (error) {
-        logger.error(error);
-        throw 'Error on saving the new user';
-    }
+    const [result] = await conn.query(query, values);
+    return result;
 };
 
 module.exports = {

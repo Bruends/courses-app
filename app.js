@@ -22,7 +22,6 @@ app.use(function(err, req, res, next) {
     res.sendStatus(500);
 });
 
-
-app.listen(3000, () => {
+app.listen(process.env.APP_PORT, () => {
    logger.info(`app running on: localhost:${process.env.APP_PORT}/`);
 });
