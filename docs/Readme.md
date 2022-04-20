@@ -6,11 +6,11 @@
     - [Login](#login-route)
     - [Register](#login-route)
   - [Courses Endpoints](#courses-endpoint-auth-needed)
-    - [All Courses](#get---all-courses)
-    - [Course by Id](#get---course-by-id)
-    - [Save Course](#post---save-course)
-    - [Edit Course](#put---edit-course)
-    - [Delete Course](#delete---delete-course)
+    - [All Courses](#all-courses)
+    - [Course by Id](#find-course-by-id)
+    - [Save Course](#save-course)
+    - [Edit Course](#edit-course)
+    - [Delete Course](#delete-course)
 
 
 # DB Entity Relationship Diagram
@@ -59,7 +59,7 @@ Response:
 ```
 # Courses Endpoint (Auth Needed)
 
-## Get - All courses
+## All courses
 ```
 GET /courses
 ```
@@ -81,7 +81,7 @@ response:
 ]
 ```
 
-## Get - course by id
+## Find course by id
 ```
 GET /courses/{id}
 ```
@@ -102,7 +102,7 @@ response:
 
 ```
 
-## POST - save course
+## Save course
 ```
 POST /courses
 ```
@@ -123,7 +123,7 @@ response status:
 201 created
 ```
 
-## PUT - Edit Course
+## Edit Course
 ```
 PUT /courses
 ```
@@ -145,7 +145,7 @@ response status:
 200 success
 ```
 
-# DELETE - delete course
+# Delete course
 ```
 DELETE /courses/{id}
 ```
