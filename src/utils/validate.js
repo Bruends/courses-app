@@ -1,7 +1,6 @@
 const validateUser = (user) => {
     const emailRegex = /^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?(?:\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)*$/;
-    const validation = { isUserValid: true, message: null };
-
+    
     // no email or invalid email
     if(!user.email || !emailRegex.test(user.email))
         return false;
@@ -14,7 +13,8 @@ const validateUser = (user) => {
     if(!user.password || user.password.length < 8)
         return false;
 
-    return validation;
+    // valid user
+    return true
 };
 
 const validateCourse = (course) => {
@@ -26,6 +26,7 @@ const validateCourse = (course) => {
     if(!course.category && !course.category_id)
         return false;
 
+    // valid course
     return true;
 };
 

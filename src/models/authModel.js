@@ -6,9 +6,8 @@ const save = async (user) => {
     const conn = await connect();
     
     // preparing query
-    const query  = 'INSERT INTO users(name, username, email, password) VALUES (?,?,?,?);';
-    const values = [
-        user.name,
+    const query  = 'INSERT INTO users(username, email, password) VALUES (?,?,?);';
+    const values = [        
         user.username,
         user.email,
         user.password
