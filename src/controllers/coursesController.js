@@ -7,7 +7,7 @@ const getAll = async (request, response) => {
     try {
         // getting user id
         const { userId } = request;
-        //getting courses
+        // getting courses
         const courses = await coursesModel.getAll(userId);
         return response.status(200).json( courses );
     } catch (error) {

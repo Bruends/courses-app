@@ -4,9 +4,7 @@ const logger = require('../utils/logger');
 // field string for selects
 const courseFields = `
     courses.id, courses.user_id, courses.name, courses.link, 
-    categories.name AS category, courses.category_id, courses.notes, 
-    courses.completed, courses.last_updated, courses.certificate_link, 
-    courses.total_lessons, courses.completed_lessons 
+    categories.name AS category, courses.category_id 
 `;
 
 const getAll = async (userId) => {
@@ -63,24 +61,14 @@ const save = async (course) => {
         // connect to db
         const conn = await connect();
         
-        // query fields
-        const insertCourseFields = `user_id, name, link, category_id, notes, 
-            completed, certificate_link, total_lessons,
-            completed_lessons`;
-
-        // preparing query
-        const query  = `INSERT INTO courses(${insertCourseFields}) 
-                        VALUES (?,?,?,?,?,?,?,?,?)`;
+       // preparing query
+        const query  = `INSERT INTO courses(user_id, name, link, category_id) 
+                        VALUES (?,?,?,?)`;
         const values = [
             course.userId,
             course.name,
             course.link || null,
-            course.categoryId || 1,
-            course.notes || null,
-            course.completed || false,
-            course.certificateLink || null,
-            course.totalLessons || null,
-            course.completedLessons || null
+            course.categoryId || 1,            
         ];
 
         return await conn.query(query, values);
@@ -96,20 +84,12 @@ const update = async (course) => {
         // connect to db
         const conn = await connect();
         
-        const updateCourseFields = `name = ?, link = ?, category_id = ?, notes = ?, 
-            completed = ?, certificate_link = ?, total_lessons = ?, completed_lessons = ?`;
-
         // preparing query
-        const query  = `UPDATE courses SET ${updateCourseFields} WHERE id = ? AND user_id = ?`;
+        const query  = `UPDATE courses SET name = ?, link = ?, category_id = ? WHERE id = ? AND user_id = ?`;
         const values = [
             course.name,
             course.link || null,
-            course.categoryId || 1,
-            course.notes || null,
-            course.completed || false,
-            course.certificateLink || null,
-            course.totalLessons || null,
-            course.completedLessons || null,
+            course.categoryId || 1,            
             course.id,
             course.userId,
         ];
