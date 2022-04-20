@@ -1,6 +1,9 @@
 # Courses App Api
 API for the courses app
 
+## Documentation
+- Check the documentation [Here](docs/Readme.md)
+
 ## Features
 - Rest
 - Protected Routes
